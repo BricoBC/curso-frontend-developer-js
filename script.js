@@ -5,34 +5,51 @@ const mobileMenu = document.querySelector('.mobile-menu');
 const navbarShop = document.querySelector('.navbar-shopping-cart');
 const shoppingCartProduc = document.querySelector('#shoppingCartProduc');
 const cardsContainer = document.querySelector('.cards-container');
+const productDetailContainer = document.querySelector('#detailProduct');
+const btnDetailProductClose = document.querySelector('.product-detail-close');
+const arrAllViews = [shoppingCartProduc, productDetailContainer, mobileMenu, desktopMenu];
 
 navEmail.addEventListener('click', toggleDesktopMenu);
 btnHamburger.addEventListener('click', toggleMobileMenu);
 navbarShop.addEventListener('click', toggleshoppingCartProducCarrito);
+btnDetailProductClose.addEventListener('click', detailProduct);
 
 function toggleDesktopMenu(){
-    const isshoppingCartProducClosed = shoppingCartProduc.classList.contains('inactive');
-    if(!isshoppingCartProducClosed){
-        shoppingCartProduc.classList.toggle('inactive');
-    }
-    desktopMenu.classList.toggle('inactive');
+    closeViews(desktopMenu, arrAllViews);
 }
 
 function toggleMobileMenu(){
-    const isshoppingCartProducClosed = shoppingCartProduc.classList.contains('inactive');
-    if (!isshoppingCartProducClosed){
-        shoppingCartProduc.classList.toggle('inactive');
-    }
-    mobileMenu.classList.toggle('inactive');
+    closeViews(mobileMenu, arrAllViews);
 }
 
 function toggleshoppingCartProducCarrito(){
-    const isMobileMenuClosed = mobileMenu.classList.contains('inactive');
-    if(!isMobileMenuClosed){
-        mobileMenu.classList.toggle('inactive')
+    closeViews(shoppingCartProduc, arrAllViews);
+}
 
+function detailProduct(){
+    closeViews(productDetailContainer,arrAllViews);
+}
+
+function openDetailProduct(){
+    const isShoppingCartProducClosed = shoppingCartProduc.classList.contains('inactive');
+    if (!isShoppingCartProducClosed){
+        shoppingCartProduc.classList.toggle('inactive');
     }
-    shoppingCartProduc.classList.toggle('inactive');
+    productDetailContainer.classList.remove('inactive');
+}
+
+
+function closeViews(element , arrViews){
+    const isTheElementOpen = element.classList.contains('inactive');
+    if(!isTheElementOpen){
+        element.classList.add('inactive');
+    }
+    else{
+        for (let views of arrViews){
+            (views==element)? views.classList.remove('inactive'): views.classList.add('inactive');   
+        }
+    }
+    
 }
 
 const productList = [];
@@ -65,34 +82,39 @@ productList.push({
 //         </div>
 //       </div>
 
-for (product of productList){
-    const productCard = document.createElement('div');
-    productCard.classList.add('product-card');
-
-    const imgProduct = document.createElement('img');
-    imgProduct.setAttribute('src', product.image );
-    const productInfo = document.createElement('div');
-    productInfo.classList.add('product-info');
-
-    const divP = document.createElement('div');
-    const pPrecio = document.createElement('p');
-    pPrecio.innerText = '$ ' + product.price;
-    const pProduct = document.createElement('p');
-    pProduct.innerText = product.name;
-
-    divP.append(pPrecio, pProduct);
-
-    const figure = document.createElement('figure');
-    const imgFigure = document.createElement('img');
-    imgFigure.setAttribute('src', './icons/bt_add_to_cart.svg');
-    //Se mete del hijo al padre
-    figure.appendChild(imgFigure);
-
-    productInfo.append(divP, figure);
-
-    productCard.append(imgProduct, productInfo);
+function renderProduct(arr){
+    for (product of productList){
+        const productCard = document.createElement('div');
+        productCard.classList.add('product-card');
     
-    cardsContainer.appendChild(productCard);
-
+        const imgProduct = document.createElement('img');
+        imgProduct.setAttribute('src', product.image );
+        imgProduct.addEventListener('click', openDetailProduct )
+        const productInfo = document.createElement('div');
+        productInfo.classList.add('product-info');
+    
+        const divP = document.createElement('div');
+        const pPrecio = document.createElement('p');
+        pPrecio.innerText = '$ ' + product.price;
+        const pProduct = document.createElement('p');
+        pProduct.innerText = product.name;
+    
+        divP.append(pPrecio, pProduct);
+    
+        const figure = document.createElement('figure');
+        const imgFigure = document.createElement('img');
+        imgFigure.setAttribute('src', './icons/bt_add_to_cart.svg');
+        //Se mete del hijo al padre
+        figure.appendChild(imgFigure);
+    
+        productInfo.append(divP, figure);
+    
+        productCard.append(imgProduct, productInfo);
+        
+        cardsContainer.appendChild(productCard);
+    
+    }
 }
+
+renderProduct(productList);
 
